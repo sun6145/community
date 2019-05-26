@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>提问</title>
+    <link href="css/bootstrap.css " rel="stylesheet">
+    <link href="css/community.css " rel="stylesheet">
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <script src="js/bootstrap.js" type="application/javascript"></script>
+</head>
+<body>
+
+<div th:replace="~{index::nav}"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <hr>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题（简单扼要）：</label>
+                    <input type="text" class="form-control" id="title" name="title"  th:value="${title}" placeholder="问题标题">
+                </div>
+                <div class="form-group">
+                    <label for="description">问题补充（必填，请参考右侧提示）：</label>
+                    <textarea class="form-control" id="description" name="description" cols="30" rows="10"  th:text="${description}" ></textarea>
+                </div>
+                <div class="tag">
+                    <label for="tag">添加标签：</label>
+                    <input type="text" class="form-control" name="tag" id="tag" placeholder="输入标签，以‘,’号分割"  th:value="${tag}">
+                </div>
+                <div class="alert alert-warning alert-dismissible" role="alert" th:if="${error !=null}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <strong th:text="${error}"></strong>
+                </div>
+
+                <button type="submit" class="btn btn-success btn_publish">发布</button>
+
+
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+
+            <h3>问题发起指南</h3>
+
+            <ul>
+                <li>
+                    <b>问题标题</b>:请用精简的语言描述您发布的问题,不超过25字
+                </li>
+                <li><b>问题补充</b>:详细补充您的问题内容,并确保问题描述清晰直观,并提供一些相关的资料</li>
+                <li><b>选择标签</b>:选择一个或者多个合适的标签,用逗号隔开,每个标签不超过10个字</li>
+
+            </ul>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
