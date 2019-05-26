@@ -14,7 +14,7 @@ import pers.sfl.model.User;
 @Mapper
 public interface UserMapper {
 
-    @Insert("insert into user (name,account_id,token,gmt_modified,gmt_create) values(#{name},#{accountId},#{token},#{gmtModified},#{gmtCreate})")
+    @Insert("insert into user (name,account_id,token,gmt_modified,gmt_create,avatar_url) values(#{name},#{accountId},#{token},#{gmtModified},#{gmtCreate},#{avatarUrl})")
     public void insertUser(User user);
 
     @Select("select * from user where token=#{token} ")
