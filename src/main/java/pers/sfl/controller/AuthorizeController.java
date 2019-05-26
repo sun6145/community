@@ -11,7 +11,9 @@ import pers.sfl.mapper.UserMapper;
 import pers.sfl.model.User;
 import pers.sfl.provider.GithubProvider;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 /**
@@ -46,7 +48,10 @@ public class AuthorizeController {
      * @param state
      */
     @RequestMapping("/callback")
-    public String getGithubCode(@RequestParam("code") String code, @RequestParam(value = "state") String state, HttpServletRequest request) {
+    public String getGithubCode(@RequestParam("code") String code,
+                                @RequestParam(value = "state") String state,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_secret(client_secret);
         accessTokenDTO.setClient_id(client_id);
@@ -59,11 +64,15 @@ public class AuthorizeController {
         if (githubUser != null) {
             User user = new User();
             user.setName(githubUser.getName());
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setAccountId(githubUser.getId() + "");
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
             userMapper.insertUser(user);
+            //添加一个cookie
+            Cookie cookie = new Cookie("token",token);
+            response.addCookie(cookie);
             //登录成功
             request.getSession().setAttribute("user", githubUser);
             return "redirect:/";
