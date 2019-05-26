@@ -1,8 +1,5 @@
 package pers.sfl.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.sun.org.apache.regexp.internal.RE;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -10,10 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pers.sfl.dto.AccessTokenDTO;
 import pers.sfl.dto.GithubUser;
+import pers.sfl.mapper.UserMapper;
+import pers.sfl.model.User;
 import pers.sfl.provider.GithubProvider;
-import sun.misc.Request;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  * github授权
@@ -26,6 +25,10 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
+
+    @Autowired
+    private UserMapper userMapper;
+
 
     @Value("${github.client_id}")
     private String client_id;
@@ -43,7 +46,7 @@ public class AuthorizeController {
      * @param state
      */
     @RequestMapping("/callback")
-    public String  getGithubCode(@RequestParam("code") String code, @RequestParam(value = "state") String state,HttpServletRequest request) {
+    public String getGithubCode(@RequestParam("code") String code, @RequestParam(value = "state") String state, HttpServletRequest request) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_secret(client_secret);
         accessTokenDTO.setClient_id(client_id);
@@ -53,13 +56,20 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getGithubUser(accessToken);
         //System.out.println(githubUser.getName());
-        if(githubUser!=null){
+        if (githubUser != null) {
+            User user = new User();
+            user.setName(githubUser.getName());
+            user.setToken(UUID.randomUUID().toString());
+            user.setAccountId(githubUser.getId() + "");
+            user.setGmtCreate(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreate());
+            userMapper.insertUser(user);
             //登录成功
             request.getSession().setAttribute("user", githubUser);
-            return  "redirect:/";
-        }else{
+            return "redirect:/";
+        } else {
             //登录失败，重新登录
-            return  "redirect:/";
+            return "redirect:/";
         }
     }
 }
