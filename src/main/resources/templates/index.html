@@ -78,6 +78,31 @@
                 </div>
                 <hr>
             </div>
+            <nav aria-label="Page navigation"  class="btn_publish">
+                <ul class="pagination">
+                    <li th:if="${paginationDTO.showFirstPage}">
+                        <a href="#" th:href="@{/(page=1)}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:if="${paginationDTO.showPrevious}">
+                        <a href="#" th:href="@{/(page=${paginationDTO.page-1})}" aria-label="Previous">
+                            <span aria-hidden="true">&lt;</span>
+                        </a>
+                    </li>
+                    <li th:each="page : ${paginationDTO.getPages()}"  th:class="${page==paginationDTO.page}?'active':''"><a href="/" th:href="@{/(page=${page})}" th:text="${page}">1</a></li>
+                    <li  th:if="${paginationDTO.showNext}">
+                        <a href="#"  th:href="@{/(page=${paginationDTO.page+1})}" aria-label="Next">
+                            <span aria-hidden="true">&gt;</span>
+                        </a>
+                    </li>
+                    <li  th:if="${paginationDTO.showEndPage}">
+                        <a href="#"  th:href="@{/(page=${paginationDTO.totalPage})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>热门话题</h3>
