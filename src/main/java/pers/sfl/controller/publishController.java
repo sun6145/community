@@ -23,7 +23,12 @@ public class publishController {
     private QuestionMapper questionMapper;
 
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(HttpSession session,Model model) {
+        User user = (User) session.getAttribute("user");
+        if(user==null){
+            model.addAttribute("error","用户没有登陆");
+            return "redirect:/";
+        }
         return "publish";
     }
 
@@ -54,8 +59,6 @@ public class publishController {
         if (user == null) {
             model.addAttribute("error", "用户未登录。");
             return "publish";
-        }else {
-
         }
         Question question = new Question();
         question.setDescription(description);
