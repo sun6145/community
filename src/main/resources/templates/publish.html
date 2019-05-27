@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>提问</title>
-    <link href="css/bootstrap.css " rel="stylesheet">
-    <link href="css/community.css " rel="stylesheet">
+    <link th:href="@{/css/bootstrap.css }" rel="stylesheet">
+    <link th:href="@{/css/community.css}" rel="stylesheet">
     <script th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
-    <script src="js/bootstrap.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.js" type="application/javascript"></script>
 </head>
 <body>
-
-<div th:replace="~{index::nav}"></div>
+<div th:replace="~{navigation :: nav}"></div>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
@@ -34,10 +33,7 @@
                             aria-hidden="true">&times;</span></button>
                     <strong th:text="${error}"></strong>
                 </div>
-
                 <button type="submit" class="btn btn-success btn_publish">发布</button>
-
-
             </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
