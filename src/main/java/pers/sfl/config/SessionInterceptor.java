@@ -12,40 +12,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * @author Scott  fl_6145@163.com
+ * @author Scott fl_6145@163.com
  * @create 2019-05-27 18:06
  */
 @Service
 public class SessionInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private UserMapper userMapper;
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        //保证用户登录放到session
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
+  @Autowired private UserMapper userMapper;
+
+  @Override
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+      throws Exception {
+    // 保证有cookie的用户自动登录放到session
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null && cookies.length > 0) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("token")) {
+          String token = cookie.getValue();
+          User user = userMapper.findByToken(token);
+          if (user != null) {
+            request.getSession().setAttribute("user", user);
+          }
+          break;
         }
-        return true;
+      }
     }
+    return true;
+  }
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+  @Override
+  public void postHandle(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      Object handler,
+      ModelAndView modelAndView)
+      throws Exception {}
 
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-
-    }
+  @Override
+  public void afterCompletion(
+      HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+      throws Exception {}
 }
