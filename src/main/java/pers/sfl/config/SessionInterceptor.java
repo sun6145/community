@@ -2,6 +2,7 @@ package pers.sfl.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import pers.sfl.mapper.UserMapper;
@@ -30,7 +31,10 @@ public class SessionInterceptor implements HandlerInterceptor {
         if (cookie.getName().equals("token")) {
           String token = cookie.getValue();
           User user = userMapper.findByToken(token);
-          if (user != null) {
+          if (user != null
+              && !StringUtils.isEmpty(user.getAccountId())
+              && user.getAccountId() != "0"
+              && !StringUtils.isEmpty(user.getName())) {
             request.getSession().setAttribute("user", user);
           }
           break;

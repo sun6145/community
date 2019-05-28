@@ -10,7 +10,11 @@
 </head>
 <body>
 <div th:replace="navigation :: nav"></div>
-
+<div class="alert alert-warning alert-dismissible" role="alert" th:if="${msg !=null}">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <strong th:text="${msg}">Warning!</strong>
+</div>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
@@ -35,34 +39,35 @@
                     </div>
                     <hr>
                 </div>
+
+                <nav aria-label="Page navigation" class="btn_publish">
+                    <ul class="pagination">
+                        <li th:if="${paginationDTO.showFirstPage}">
+                            <a href="#" th:href="@{/(page=1)}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;&lt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.showPrevious}">
+                            <a href="#" th:href="@{/(page=${paginationDTO.page - 1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+                        </li>
+                        <li th:each="page : ${paginationDTO.getPages()}"
+                            th:class="${page==paginationDTO.page}?'active':''">
+                            <a href="/" th:href="@{/(page=${page})}" th:text="${page}">1</a></li>
+                        <li th:if="${paginationDTO.showNext}">
+                            <a href="#" th:href="@{/(page=${paginationDTO.page + 1})}" aria-label="Next">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.showEndPage}">
+                            <a href="#" th:href="@{/(page=${paginationDTO.totalPage})}" aria-label="Next">
+                                <span aria-hidden="true">&gt;&gt;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <nav aria-label="Page navigation" class="btn_publish">
-                <ul class="pagination">
-                    <li th:if="${paginationDTO.showFirstPage}">
-                        <a href="#" th:href="@{/(page=1)}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;&lt;</span>
-                        </a>
-                    </li>
-                    <li th:if="${paginationDTO.showPrevious}">
-                        <a href="#" th:href="@{/(page=${paginationDTO.page - 1})}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;</span>
-                        </a>
-                    </li>
-                    <li th:each="page : ${paginationDTO.getPages()}"
-                        th:class="${page==paginationDTO.page}?'active':''">
-                        <a href="/" th:href="@{/(page=${page})}" th:text="${page}">1</a></li>
-                    <li th:if="${paginationDTO.showNext}">
-                        <a href="#" th:href="@{/(page=${paginationDTO.page + 1})}" aria-label="Next">
-                            <span aria-hidden="true">&gt;</span>
-                        </a>
-                    </li>
-                    <li th:if="${paginationDTO.showEndPage}">
-                        <a href="#" th:href="@{/(page=${paginationDTO.totalPage})}" aria-label="Next">
-                            <span aria-hidden="true">&gt;&gt;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>热门话题</h3>

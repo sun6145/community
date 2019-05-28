@@ -3,6 +3,7 @@ package pers.sfl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pers.sfl.dto.AccessTokenDTO;
@@ -53,7 +54,8 @@ public class AuthorizeController {
       @RequestParam("code") String code,
       @RequestParam(value = "state") String state,
       HttpServletRequest request,
-      HttpServletResponse response) {
+      HttpServletResponse response,
+      Model model) {
     AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
     accessTokenDTO.setClient_secret(client_secret);
     accessTokenDTO.setClient_id(client_id);
@@ -70,19 +72,22 @@ public class AuthorizeController {
       user.setToken(token);
       user.setAccountId(githubUser.getId() + "");
       user.setAvatarUrl(githubUser.getAvatar_url());
-      userService.updateOrCreate(user);
-      // userMapper.insertUser(user);
-      // 添加一个cookie
-      Cookie cookie = new Cookie("token", token);
-      cookie.setMaxAge(3600); // 设置cookie过期时间为1个小时
-      response.addCookie(cookie);
-      // 登录成功
-      request.getSession().setAttribute("user", user);
-      return "redirect:/";
-    } else {
-      // 登录失败，重新登录
-      return "redirect:/";
+      String info = userService.updateOrCreate(user);
+      if (!info.equals("error")) {
+        // 添加一个cookie
+        Cookie cookie = new Cookie("token", token);
+        cookie.setMaxAge(3600); // 设置cookie过期时间为1个小时
+        response.addCookie(cookie);
+        // 登录成功
+        request.getSession().setAttribute("user", user);
+        return "redirect:/";
+      } else if (info.equals("error")) {
+        model.addAttribute("msg", "系统更换了client_secret，请联系管理员解决：XXXX@XXXX.com");
+        return "index";
+      }
     }
+    // 登录失败，重新登录
+    return "redirect:/";
   }
 
   @RequestMapping("logout")

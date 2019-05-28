@@ -3,6 +3,7 @@ package pers.sfl.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import pers.sfl.model.Question;
 
 import java.util.List;
@@ -29,4 +30,8 @@ public interface QuestionMapper {
 
   @Select("select * from question where id=#{id}")
   List<Question> getQuestionById(Integer id);
+
+  @Update(
+      "update question set title= #{title},description=#{description},tag=#{tag}, gmt_modified=#{gmtModified}")
+  void updateInfo(Question question);
 }
